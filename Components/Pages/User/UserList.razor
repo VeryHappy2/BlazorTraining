@@ -1,0 +1,46 @@
+﻿@page "/User/UserList"
+@inject IUserService UserService
+
+<PageTitle>User list</PageTitle>
+
+<h3>UserList</h3>
+
+<button class="btn btn-primary" @onclick="LoadUsers">get users</button>
+@if (_pageItem?.Data != null)
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">First</th>
+				<th scope="col">Last</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < _pageItem.Data.Count; i++)
+			{
+				<tr>
+					<th scope="row">@i</th>
+					<td>@_pageItem.Data[i].First_Name</td>
+					<td>@_pageItem.Data[i].Last_Name</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private PageItem<User>? _pageItem { get; set; }
+
+	private async void LoadUsers()
+	{
+		try
+		{
+			_pageItem = await UserService.GetListUsersAsync();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine("Error: ", ex);
+		}
+	}
+}

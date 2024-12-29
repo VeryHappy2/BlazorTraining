@@ -1,0 +1,45 @@
+﻿@page "/User/UserAdd"
+@inject IUserService UserService
+
+<input type="text" class="form-control" style="margin: 4px;" placeholder="Enter a name" @bind="_name" />
+<input type="text" class="form-control" style="margin: 4px;"  placeholder="Enter a job" @bind="_job" />
+
+<button class="btn btn-primary" style="margin: 4px;" @onclick="this.AddUser">Add</button>
+
+<p>@_message</p>
+
+@code{
+    private string? _name { get; set; }
+    private string? _job { get; set; }
+    private string _message { get; set; }
+
+    private async Task AddUser()
+    {
+        if (string.IsNullOrWhiteSpace(_name) || string.IsNullOrWhiteSpace(_job))
+        {
+            _message = "Please enter name and job";
+            return;
+        }
+
+        try
+        {
+            var user = new UserAddRequest
+            {
+                Name = _name!,
+                Job = _job!
+            };
+            var success = await UserService.AddUserAsync(user);
+
+            if (success.Id == null)
+            {
+                _message = "Failed to add user";
+            }
+
+            _message = "User was added successfully";
+        }
+		catch (Exception ex)
+		{
+			Console.WriteLine("Error: ", ex);
+		}
+    }
+}
